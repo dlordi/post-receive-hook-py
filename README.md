@@ -5,13 +5,13 @@
   - put `git-upload-pack.bat` in the directory with `git-upload-pack.exe`
   - put `git-receive-pack.bat` in the directory with `git-receive-pack.exe`
 
-- put `post-receive` in the `hooks` directory of the remote bare repo
+- put `post-receive` and `post-receive.py` in the `hooks` directory of the remote bare repo
 
-- Windows: put `post-receive.bat` in the `hooks` directory of the remote bare repo
-
-- Linux: execute the following commands
+- on Linux/Mac: execute the following commands
 
 ```sh
 dos2unix hooks/post-receive
 chmod +x hooks/post-receive
 ```
+
+- customize `.deploy/deployment.py`
