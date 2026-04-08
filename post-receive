@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 os="$(uname -s)"
-# adjust python path
+
+# set the right python path for the OS in use
 case "$os" in
   Linux*) python="python3" ;;
   Darwin*) python="python3" ;;
-  MINGW*|MSYS*|CYGWIN*) python="/c/Python312/python.exe" ;;
+  MINGW*|MSYS*|CYGWIN*) python="/c/Python314/python.exe" ;;
   *)
     echo "ERROR: Unknown OS: $os"
     exit 1
