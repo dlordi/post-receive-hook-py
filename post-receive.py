@@ -46,6 +46,7 @@ with tempfile.TemporaryDirectory() as tmp_dir:
 
     subprocess.run(
         [sys.executable, os.path.join(tmp_dir, '.deploy', 'deployment.py')],
+        cwd=tmp_dir,
         check=True,
         input='\n'.join(status_lines),
         text=True,
