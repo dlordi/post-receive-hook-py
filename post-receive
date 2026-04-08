@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+os="$(uname -s)"
+# adjust python path
+case "$os" in
+  Linux*) python="python3" ;;
+  Darwin*) python="python3" ;;
+  MINGW*|MSYS*|CYGWIN*) python="/c/Python312/python.exe" ;;
+  *)
+    echo "ERROR: Unknown OS: $os"
+    exit 1
+  ;;
+esac
+
+$python "hooks/post-receive.py"
