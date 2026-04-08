@@ -7,6 +7,8 @@
 
 - put `post-receive` and `post-receive.py` in the `hooks` directory of the remote bare repo
 
+- edit `post-receive` to set the right python path for the OS in use
+
 - on Linux/Mac: execute the following commands
 
 ```sh
