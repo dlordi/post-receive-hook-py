@@ -8,8 +8,8 @@ import sys
 
 
 def get_deploy_info_from_repo_path(repo_path: str):
-    deploy_path = repo_path # TODO: convert to deploy path; set to None (or leave equal to repo_path) to ignore
-    dry_run = True # TODO: change to False to actually perform deployment actions
+    deploy_path = repo_path  # TODO: convert to deploy path; set to None (or leave equal to repo_path) to ignore
+    dry_run = True  # TODO: change to False to actually perform deployment actions
     return (deploy_path, dry_run)
 
 
@@ -25,7 +25,7 @@ def main():
             print(f'no deployment for {repo_path}')
             continue
 
-        actions = []
+        actions: list[str] = []
         deploy_path_exists = os.path.exists(deploy_path)
         if repo_status in ('A', 'M'):
             if not deploy_path_exists:
