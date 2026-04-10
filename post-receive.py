@@ -8,6 +8,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import typing
 
 
 DEPLOYMENT_BRANCH = 'main'
@@ -35,6 +36,9 @@ def main(dry_run: bool):
 
         with contextlib.chdir(tmp_dir):
             spec = importlib.util.spec_from_file_location('deployment', os.path.join(*deployment_py_path.split('/')))
+            if (not spec) or (not spec.loader):
+                print('ERROR: unable to import deploy')
+                raise Exception(f'unable to import "{deployment_py_path}"')
             sys.modules['deployment'] = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(sys.modules['deployment'])
 
@@ -56,13 +60,21 @@ def checkout(tmp_dir: str, git_dir: str, deployment_py_path: str):
                 continue
 
         diff_file_lines = subprocess.run(
-            ['git', f'--work-tree={tmp_dir}', f'--git-dir={git_dir}', 'diff', '--name-status', oldrev if oldrev != '0' * 40 else '--root', newrev],
+            [
+                'git',
+                f'--work-tree={tmp_dir}',
+                f'--git-dir={git_dir}',
+                'diff',
+                '--name-status',
+                oldrev if oldrev != '0' * 40 else '--root',
+                newrev,
+            ],
             check=True,
             stdout=subprocess.PIPE,
             text=True,
         ).stdout.splitlines()
         for diff_file_line in diff_file_lines:
-            print(diff_file_line) # TODO: remove me
+            print(diff_file_line)  # TODO: remove me
             status, repo_path = diff_file_line.split('\t', 1)
             if status in ('A', 'M'):
                 checkout_files.append((newrev, repo_path))
@@ -72,16 +84,25 @@ def checkout(tmp_dir: str, git_dir: str, deployment_py_path: str):
 
     if status_lines:
         # TODO: add all files in .deploy directory
-        checkout_files.append((None, deployment_py_path))
+        checkout_files.append(('', deployment_py_path))
         for _, checkout_file in checkout_files:
             subprocess.run(
-                ['git', f'--work-tree={tmp_dir}', f'--git-dir={git_dir}', 'checkout', '-f', DEPLOYMENT_BRANCH, '--', checkout_file],
+                [
+                    'git',
+                    f'--work-tree={tmp_dir}',
+                    f'--git-dir={git_dir}',
+                    'checkout',
+                    '-f',
+                    DEPLOYMENT_BRANCH,
+                    '--',
+                    checkout_file,
+                ],
                 check=True,
             )
     return status_lines
 
 
-def deploy(dry_run: bool, status_lines, get_deploy_path_from_repo_path):
+def deploy(dry_run: bool, status_lines: list[str], get_deploy_path_from_repo_path: typing.Callable[[str], str]):
     mode = '*** DRY RUN! *** ' if dry_run else ''
 
     for line in status_lines:
