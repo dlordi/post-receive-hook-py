@@ -16,9 +16,13 @@
     - put `git-upload-pack.bat` and in the same directory of `git-upload-pack.exe` and `git-receive-pack.exe`
       - to find the directory, run `where git-upload-pack` and `where git-receive-pack`
 
+- put `pre-receive` and `pre-receive.py` in the `hooks` directory of the remote bare repo
+
 - put `post-receive` and `post-receive.py` in the `hooks` directory of the remote bare repo
 
-- edit `post-receive` to set the right python path for the OS in use
+- edit `post-receive` and `pre-receive` to set the right python path for the OS in use
+
+- configure remote bare repo to accept push parameters: `git config receive.advertisePushOptions true`
 
 - on Linux/Mac: execute the following commands
 

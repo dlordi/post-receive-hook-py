@@ -1,15 +1,34 @@
 #!/usr/bin/env bash
-os="$(uname -s)"
+set -euo pipefail
 
-# set the right python path for the OS in use
-case "$os" in
-  Linux*) python="python3" ;;
-  Darwin*) python="python3" ;;
-  MINGW*|MSYS*|CYGWIN*) python="/c/Python314/python.exe" ;;
-  *)
-    echo "ERROR: Unknown OS: $os"
-    exit 1
-  ;;
-esac
+dry_run=
+if test -n "$GIT_PUSH_OPTION_COUNT"; then
+  i=0
+  while test "$i" -lt "$GIT_PUSH_OPTION_COUNT"; do
+    eval "value=\$GIT_PUSH_OPTION_$i"
+    case "$value" in
+    dry-run)
+      dry_run=x
+      ;;
+    esac
+    i=$((i + 1))
+  done
+fi
 
-$python "hooks/pre-receive.py"
+if test -n "$dry_run"; then
+  os="$(uname -s)"
+
+  # set the right python path for the OS in use
+  case "$os" in
+    Linux*) python="python3" ;;
+    Darwin*) python="python3" ;;
+    MINGW*|MSYS*|CYGWIN*) python="/c/Python314/python.exe" ;;
+    *)
+      echo "ERROR: Unknown OS: $os"
+      exit 1
+    ;;
+  esac
+
+  $python "hooks/pre-receive.py" --dry-run
+  exit 1
+fi
