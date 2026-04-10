@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import argparse
 import datetime
 import hashlib
 import os
@@ -14,6 +15,11 @@ def get_deploy_info_from_repo_path(repo_path: str):
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--dry-run', action='store_true')
+    args = parser.parse_args()
+    dry_run = args.dry_run
+
     for line in sys.stdin:
         line = line.strip()
         if not line:
