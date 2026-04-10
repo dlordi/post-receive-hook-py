@@ -24,7 +24,14 @@ with tempfile.TemporaryDirectory() as tmp_dir:
             continue
         oldrev, newrev, refname = line.strip().split()
         diff = subprocess.run(
-            ['git', f'--git-dir={git_dir}', 'diff', '--name-status', oldrev, newrev],
+            [
+                'git',
+                f'--git-dir={git_dir}',
+                'diff',
+                '--name-status',
+                oldrev if oldrev != '0' * 40 else '--root',
+                newrev,
+            ],
             check=True,
             stdout=subprocess.PIPE,
             text=True,
