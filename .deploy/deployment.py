@@ -12,3 +12,11 @@ def get_deploy_info_from_repo_path(repo_path: str) -> str | None:
     elif ASSETS_REGEX.match(deploy_path):
         pass
     return deploy_path
+
+
+def repo_path_to_os_path(repo_path: str) -> str:
+    """Utility to convert repo path to OS specific path"""
+    retval = repo_path
+    if os.path.sep != '/':
+        retval = retval.replace('/', os.path.sep)
+    return retval
