@@ -74,7 +74,6 @@ def checkout(tmp_dir: str, git_dir: str, deployment_py_path: str):
             text=True,
         ).stdout.splitlines()
         for diff_file_line in diff_file_lines:
-            print(diff_file_line)  # TODO: remove me
             status, repo_path = diff_file_line.split('\t', 1)
             if status in ('A', 'M'):
                 checkout_files.append((newrev, repo_path))
