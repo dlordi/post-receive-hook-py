@@ -26,6 +26,16 @@ chmod +x hooks/pre-receive hooks/post-receive
 
 - customize [`.deploy/deployment.py`](.deploy/deployment.py)
 
+- push to deploy (assume remote deploy repo is `live` and local production branch is `main`)
+
+```console
+git push live main --push-option=dry-run
+```
+
+```console
+git push live main
+```
+
 ## Windows w/ OpenSSH
 
 - issue: the default shell on Windows (`cmd`) **DOES NOT** handle single quotes in the same way bash does
