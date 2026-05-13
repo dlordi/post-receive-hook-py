@@ -1,5 +1,6 @@
 import contextlib
 import datetime
+import difflib
 import hashlib
 import importlib.util
 import os
@@ -70,6 +71,13 @@ def deploy_one(dry_run: bool, dry_run_descr: str, line: str, get_deploy_path_fro
                 makedirs(os.path.dirname(deploy_path))
                 shutil.copy2(repo_path, deploy_path)
             print(' ok', flush=True)
+            if dry_run and os.path.exists(deploy_path):
+                with open(deploy_path, encoding='utf8') as f:
+                    from_lines = f.read().splitlines()
+                with open(repo_path, encoding='utf8') as f:
+                    to_lines = f.read().splitlines()
+                for diff_line in difflib.unified_diff(from_lines, to_lines, fromfile=deploy_path, tofile=repo_path, lineterm=''):
+                    print(diff_line)
         elif action == 'del':
             print(f'{dry_run_descr}uninstalling {repo_path} from {deploy_path}...', end='', flush=True)
             if not dry_run:
