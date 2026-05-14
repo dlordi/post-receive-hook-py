@@ -14,6 +14,7 @@ git config receive.advertisePushOptions true
   - [`pre-receive.py`](./hooks/pre-receive.py)
   - [`post-receive`](./hooks/post-receive)
   - [`post-receive.py`](./hooks/post-receive.py)
+  - [`commons.py`](./hooks/commons.py)
 
 - edit [`post-receive`](./hooks/post-receive) and [`pre-receive`](./hooks/pre-receive) to set the right python path for the OS in use
 
@@ -24,7 +25,7 @@ dos2unix hooks/pre-receive hooks/post-receive
 chmod +x hooks/pre-receive hooks/post-receive
 ```
 
-- customize [`.deploy/deployment.py`](.deploy/deployment.py)
+- put [`.deploy/deployment.py`](.deploy/deployment.py) on the local repo and edit it to customize deployment rules
 
 - push to deploy (assume remote deploy repo is `live` and local production branch is `main`)
 
