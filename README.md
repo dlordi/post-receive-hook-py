@@ -10,14 +10,14 @@ git config receive.advertisePushOptions true
 ```
 
 - files to put in the `hooks` directory of the remote bare repo
-  - [`env`](./hooks/env)
+  - [`env.sample`](./hooks/env.sample)
   - [`pre-receive`](./hooks/pre-receive)
   - [`pre-receive.py`](./hooks/pre-receive.py)
   - [`post-receive`](./hooks/post-receive)
   - [`post-receive.py`](./hooks/post-receive.py)
   - [`commons.py`](./hooks/commons.py)
 
-- edit [`env`](./hooks/env) to set the python executable
+- rename [`env.sample`](./hooks/env.sample) to `env` and edit it to set the python executable
 
 - on Linux/Mac: execute the following commands to ensure scripts are in the right format and are executable
 
