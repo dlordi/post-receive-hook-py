@@ -13,7 +13,12 @@ import typing
 DEPLOYMENT_BRANCH = 'main'
 
 
-def deploy(dry_run, checkout, git_dir, deployment_py_path):
+def deploy(
+    dry_run: bool,
+    checkout: typing.Callable[[str, str, str], list[str] | None],
+    git_dir: str,
+    deployment_py_path: str,
+):
     with tempfile.TemporaryDirectory() as tmp_dir:
         status_lines = checkout(tmp_dir, git_dir, deployment_py_path)
         if not status_lines:
@@ -38,7 +43,12 @@ def deploy(dry_run, checkout, git_dir, deployment_py_path):
                 deploy_one(dry_run, dry_run_descr, line, sys.modules['deployment'].get_deploy_info_from_repo_path)
 
 
-def deploy_one(dry_run: bool, dry_run_descr: str, line: str, get_deploy_path_from_repo_path: typing.Callable[[str], str]):
+def deploy_one(
+    dry_run: bool,
+    dry_run_descr: str,
+    line: str,
+    get_deploy_path_from_repo_path: typing.Callable[[str], str],
+):
     repo_status, repo_path = line.split('\t', 1)
     deploy_path = get_deploy_path_from_repo_path(repo_path)
     if deploy_path in (None, repo_path):
@@ -72,12 +82,15 @@ def deploy_one(dry_run: bool, dry_run_descr: str, line: str, get_deploy_path_fro
                 shutil.copy2(repo_path, deploy_path)
             print(' ok', flush=True)
             if dry_run and os.path.exists(deploy_path):
-                with open(deploy_path, encoding='utf8') as f:
-                    from_lines = f.read().splitlines()
-                with open(repo_path, encoding='utf8') as f:
-                    to_lines = f.read().splitlines()
-                for diff_line in difflib.unified_diff(from_lines, to_lines, fromfile=deploy_path, tofile=repo_path, lineterm=''):
-                    print(diff_line)
+                with open(deploy_path, encoding='utf8') as a, open(repo_path, encoding='utf8') as b:
+                    for diff_line in difflib.unified_diff(
+                        a.read().splitlines(),
+                        b.read().splitlines(),
+                        fromfile=deploy_path,
+                        tofile=repo_path,
+                        lineterm='',
+                    ):
+                        print(diff_line, flush=True)
         elif action == 'del':
             print(f'{dry_run_descr}uninstalling {repo_path} from {deploy_path}...', end='', flush=True)
             if not dry_run:
