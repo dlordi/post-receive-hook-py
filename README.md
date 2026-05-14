@@ -17,6 +17,15 @@ git config receive.advertisePushOptions true
   - [`post-receive.py`](./hooks/post-receive.py)
   - [`commons.py`](./hooks/commons.py)
 
+```console
+curl https://raw.githubusercontent.com/dlordi/post-receive-hook-py/refs/heads/main/hooks/env.sample -o hooks/env.sample
+curl https://raw.githubusercontent.com/dlordi/post-receive-hook-py/refs/heads/main/hooks/pre-receive -o hooks/pre-receive
+curl https://raw.githubusercontent.com/dlordi/post-receive-hook-py/refs/heads/main/hooks/pre-receive.py -o hooks/pre-receive.py
+curl https://raw.githubusercontent.com/dlordi/post-receive-hook-py/refs/heads/main/hooks/post-receive -o hooks/post-receive
+curl https://raw.githubusercontent.com/dlordi/post-receive-hook-py/refs/heads/main/hooks/post-receive.py -o hooks/post-receive.py
+curl https://raw.githubusercontent.com/dlordi/post-receive-hook-py/refs/heads/main/hooks/commons.py -o hooks/commons.py
+```
+
 - rename [`env.sample`](./hooks/env.sample) to `env` and edit it to set the python executable
 
 - on Linux/Mac: execute the following commands to ensure scripts are in the right format and are executable
