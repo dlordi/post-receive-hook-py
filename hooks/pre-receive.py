@@ -29,21 +29,20 @@ def checkout(tmp_dir: str, git_dir: str, deployment_py_path: str):
             if branch != commons.DEPLOYMENT_BRANCH:
                 continue
 
+        command: list[str] = ['git', f'--work-tree={tmp_dir}', f'--git-dir={git_dir}']
+        if oldrev == '0' * 40:
+            command += ['ls-tree', '-r', '--name-only', newrev]
+        else:
+            command += ['diff', '--name-status', oldrev, newrev]
         diff_file_lines = subprocess.run(
-            [
-                'git',
-                f'--work-tree={tmp_dir}',
-                f'--git-dir={git_dir}',
-                'diff',
-                '--name-status',
-                oldrev if oldrev != '0' * 40 else '--root',
-                newrev,
-            ],
+            command,
             check=True,
             stdout=subprocess.PIPE,
             text=True,
         ).stdout.splitlines()
         for diff_file_line in diff_file_lines:
+            if oldrev == '0' * 40:
+                diff_file_line = f'A\t{diff_file_line}'
             status, repo_path = diff_file_line.split('\t', 1)
             if status in ('A', 'M'):
                 checkout_files.append((newrev, repo_path))
