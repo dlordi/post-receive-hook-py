@@ -1,15 +1,28 @@
 #!/usr/bin/env bash
-os="$(uname -s)"
+# os="$(uname -s)"
+# case "$os" in
+#   Linux*) python="python3" ;;
+#   Darwin*) python="python3" ;;
+#   MINGW*|MSYS*|CYGWIN*) python="/c/Python314/python.exe" ;;
+#   *)
+#     echo "ERROR: Unknown OS: $os"
+#     exit 1
+#   ;;
+# esac
 
-# set the right python path for the OS in use
-case "$os" in
-  Linux*) python="python3" ;;
-  Darwin*) python="python3" ;;
-  MINGW*|MSYS*|CYGWIN*) python="/c/Python314/python.exe" ;;
-  *)
-    echo "ERROR: Unknown OS: $os"
-    exit 1
-  ;;
-esac
+unset python
+. ./hooks/env
+if [ -z "${python+x}" ]; then
+  echo "ERROR: variable 'python' not set" >&2
+  exit 1
+fi
+if [ -z "$python" ]; then
+  echo "ERROR: variable 'python' is set to an empty value" >&2
+  exit 1
+fi
+if ! command -v -- "$python" >/dev/null 2>&1; then
+  echo "ERROR: '$python' is not a valid python executable" >&2
+  exit 1
+fi
 
 $python "hooks/post-receive.py"
