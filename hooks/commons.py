@@ -12,8 +12,9 @@ import typing
 
 
 class DirectStdout(io.TextIOBase):
-    def write(self, s):
-        os.write(1, str(s).encode('utf-8'))
+    def write(self, s: str):
+        if s:
+            os.write(1, s.encode('utf-8'))
         return len(s)
 
     def flush(self):
