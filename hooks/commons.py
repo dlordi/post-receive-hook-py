@@ -3,11 +3,24 @@ import datetime
 import difflib
 import hashlib
 import importlib.util
+import io
 import os
 import shutil
 import sys
 import tempfile
 import typing
+
+
+class DirectStdout(io.TextIOBase):
+    def write(self, s):
+        os.write(1, str(s).encode('utf-8'))
+        return len(s)
+
+    def flush(self):
+        pass
+
+
+sys.stdout = DirectStdout()
 
 
 DEPLOYMENT_BRANCH = 'main'
