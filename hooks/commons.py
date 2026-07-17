@@ -109,15 +109,18 @@ def deploy_one(
                 shutil.copy2(repo_path, deploy_path)
             print(' ok', flush=True)
             if dry_run and os.path.exists(deploy_path):
-                with open(deploy_path, encoding='utf8') as a, open(repo_path, encoding='utf8') as b:
-                    for diff_line in difflib.unified_diff(
-                        a.read().splitlines(),
-                        b.read().splitlines(),
-                        fromfile=deploy_path,
-                        tofile=repo_path,
-                        lineterm='',
-                    ):
-                        print(diff_line, flush=True)
+                if is_binary(deploy_path) or is_binary(repo_path):
+                    print('binary file detected: cannot show diffs', flush=True)
+                else:
+                    with open(deploy_path, encoding='utf8') as a, open(repo_path, encoding='utf8') as b:
+                        for diff_line in difflib.unified_diff(
+                            a.read().splitlines(),
+                            b.read().splitlines(),
+                            fromfile=deploy_path,
+                            tofile=repo_path,
+                            lineterm='',
+                        ):
+                            print(diff_line, flush=True)
         elif action == 'del':
             print(f'{dry_run_descr}uninstalling {repo_path} from {deploy_path}...', end='', flush=True)
             if not dry_run:
@@ -133,3 +136,10 @@ def md5(file_path: str):
 def makedirs(dirs: str):
     if dirs:
         os.makedirs(dirs, exist_ok=True)
+
+
+# https://stackoverflow.com/questions/898669/how-can-i-detect-if-a-file-is-binary-non-text-in-python
+def is_binary(file_path: str):
+    textchars = bytearray({7, 8, 9, 10, 12, 13, 27} | set(range(0x20, 0x100)) - {0x7f})
+    with open(file_path, 'rb') as f:
+        return bool(f.read().translate(None, textchars))
