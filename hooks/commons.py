@@ -24,6 +24,19 @@ class DirectStdout(io.TextIOBase):
 sys.stdout = DirectStdout()
 
 
+class DirectStderr(io.TextIOBase):
+    def write(self, s: str):
+        if s:
+            os.write(2, s.encode('utf-8'))
+        return len(s)
+
+    def flush(self):
+        pass
+
+
+sys.stderr = DirectStderr()
+
+
 DEPLOYMENT_BRANCH = 'main'
 
 
