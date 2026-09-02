@@ -78,7 +78,10 @@ def deploy_one(
 ):
     repo_status, repo_path = line.split('\t', 1)
     deploy_path = get_deploy_path_from_repo_path(repo_path)
-    if deploy_path in (None, repo_path):
+    if deploy_path is None:
+        print(f'{dry_run_descr}file explicitly excluded from deployment {repo_path}', flush=True)
+        return
+    if deploy_path == repo_path:
         print(f'{dry_run_descr}no deployment for {repo_path}', flush=True)
         return
 
