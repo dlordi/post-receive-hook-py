@@ -42,6 +42,7 @@ DEPLOYMENT_BRANCH = 'main'
 
 def deploy(
     dry_run: bool,
+    show_diffs: bool,
     checkout: typing.Callable[[str, str, str], list[str] | None],
     git_dir: str,
     deployment_py_path: str,
@@ -67,12 +68,19 @@ def deploy(
                 if not line:
                     continue
 
-                deploy_one(dry_run, dry_run_descr, line, sys.modules['deployment'].get_deploy_info_from_repo_path)
+                deploy_one(
+                    dry_run,
+                    dry_run_descr,
+                    show_diffs,
+                    line,
+                    sys.modules['deployment'].get_deploy_info_from_repo_path,
+                )
 
 
 def deploy_one(
     dry_run: bool,
     dry_run_descr: str,
+    show_diffs: bool,
     line: str,
     get_deploy_path_from_repo_path: typing.Callable[[str], str],
 ):
@@ -111,7 +119,7 @@ def deploy_one(
                 makedirs(os.path.dirname(deploy_path))
                 shutil.copy2(repo_path, deploy_path)
             print(' ok', flush=True)
-            if dry_run and os.path.exists(deploy_path):
+            if dry_run and show_diffs and os.path.exists(deploy_path):
                 if is_binary(deploy_path) or is_binary(repo_path):
                     print('binary file detected: cannot show diffs', flush=True)
                 else:

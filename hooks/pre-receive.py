@@ -7,12 +7,12 @@ import sys
 import commons
 
 
-def main(dry_run: bool):
+def main(dry_run: bool, show_diffs: bool):
     git_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
     deployment_py_path = '.deploy/deployment.py'
 
-    commons.deploy(dry_run, checkout, git_dir, deployment_py_path)
+    commons.deploy(dry_run, show_diffs, checkout, git_dir, deployment_py_path)
 
 
 def checkout(tmp_dir: str, git_dir: str, deployment_py_path: str):
@@ -98,5 +98,6 @@ def checkout(tmp_dir: str, git_dir: str, deployment_py_path: str):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--dry-run', action='store_true')
+    parser.add_argument('--show-diffs', action='store_true')
     args = parser.parse_args()
-    sys.exit(main(args.dry_run) or 0)
+    sys.exit(main(args.dry_run, args.show_diffs) or 0)

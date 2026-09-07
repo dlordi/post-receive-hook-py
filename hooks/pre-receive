@@ -2,6 +2,7 @@
 set -euo pipefail
 
 dry_run=
+show_diffs=
 if test -n "$GIT_PUSH_OPTION_COUNT"; then
   i=0
   while test "$i" -lt "$GIT_PUSH_OPTION_COUNT"; do
@@ -9,6 +10,9 @@ if test -n "$GIT_PUSH_OPTION_COUNT"; then
     case "$value" in
     dry-run)
       dry_run=x
+      ;;
+    show-diffs)
+      show_diffs=x
       ;;
     esac
     i=$((i + 1))
@@ -31,6 +35,14 @@ if test -n "$dry_run"; then
     exit 1
   fi
 
-  $python "hooks/pre-receive.py" --dry-run
+  args=(
+    "hooks/pre-receive.py"
+    "--dry-run"
+  )
+  if test -n "$show_diffs"; then
+    args+=("--show-diffs")
+  fi
+
+  $python "${args[@]}"
   exit 1
 fi

@@ -40,6 +40,10 @@ chmod +x hooks/pre-receive hooks/post-receive
 - push to deploy (assume remote deploy repo is `live` and local production branch is `main`)
 
 ```console
+git push live main --push-option=dry-run --push-option=show-diffs
+```
+
+```console
 git push live main --push-option=dry-run
 ```
 
