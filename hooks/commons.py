@@ -4,6 +4,8 @@ import difflib
 import hashlib
 import importlib.util
 import io
+import ntpath
+import posixpath
 import os
 import shutil
 import sys
@@ -106,6 +108,7 @@ def deploy_one(
             actions.append('bck')
             actions.append('del')
 
+    deploy_path = normpath(deploy_path)
     for action in actions:
         if action == 'bck':
             timestamp = datetime.datetime.now().strftime('%Y%m%d-%H%M%S')
@@ -154,3 +157,7 @@ def is_binary(file_path: str):
     textchars = bytearray({7, 8, 9, 10, 12, 13, 27} | set(range(0x20, 0x100)) - {0x7f})
     with open(file_path, 'rb') as f:
         return bool(f.read().translate(None, textchars))
+
+
+def normpath(path):
+    return ntpath.normpath(path) if os.name == 'nt' else posixpath.normpath(path)
